@@ -1,15 +1,14 @@
 /*
- * Copyright (c) 2012 - 2014 Roberto Tyley
+ * Copyright (c) 2014 Roberto Tyley
  *
- * This file is part of 'BFG Repo-Cleaner' - a tool for removing large
- * or troublesome blobs from Git repositories.
+ * This file is part of 'scala-git'.
  *
- * BFG Repo-Cleaner is free software: you can redistribute it and/or modify
+ * scala-git is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * BFG Repo-Cleaner is distributed in the hope that it will be useful,
+ * scala-git is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.

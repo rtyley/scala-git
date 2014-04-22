@@ -37,8 +37,6 @@ import scala.util.Try
 
 package object git {
 
-  def abbrId(str: String)(implicit reader: ObjectReader): ObjectId = reader.resolveExistingUniqueId(AbbreviatedObjectId.fromString(str)).get
-
   def singleThreadedReaderTuple(repo: Repository) = {
     val revWalk=new RevWalk(repo)
     (revWalk, revWalk.getObjectReader)
@@ -146,6 +144,8 @@ package object git {
 
   implicit class RichRevObject(revObject: RevObject) {
     lazy val typeString = Constants.typeString(revObject.getType)
+
+    def toTree(implicit revWalk: RevWalk): Option[RevTree] = treeOrBlobPointedToBy(revObject).right.toOption
   }
 
   val FileModeNames = Map(
@@ -221,6 +221,8 @@ package object git {
     }
   }
 
+  def abbrId(str: String)(implicit reader: ObjectReader): ObjectId = reader.resolveExistingUniqueId(AbbreviatedObjectId.fromString(str)).get
+    
   def resolveGitDirFor(folder: File) = Option(RepositoryCache.FileKey.resolve(folder, FS.detect)).filter(_.exists())
 
   def treeOrBlobPointedToBy(revObject: RevObject)(implicit revWalk: RevWalk): Either[RevBlob, RevTree] = revObject match {
@@ -228,6 +230,19 @@ package object git {
     case tree: RevTree => Right(tree)
     case blob: RevBlob => Left(blob)
     case tag: RevTag => treeOrBlobPointedToBy(revWalk.peel(tag))
+  }
+
+  def diff(trees: RevTree*)(implicit revWalk: RevWalk): Seq[DiffEntry] = {
+    val tw = new TreeWalk(revWalk.getObjectReader)
+    tw.setRecursive(true)
+    tw.reset
+
+    for (t <- trees) {
+      tw.addTree(t)
+    }
+
+    tw.setFilter(TreeFilter.ANY_DIFF)
+    DiffEntry.scan(tw)
   }
 
   def allBlobsUnder(tree: RevTree)(implicit reader: ObjectReader): Set[ObjectId] = {

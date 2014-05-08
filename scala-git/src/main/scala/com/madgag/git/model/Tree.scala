@@ -24,6 +24,7 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser
 
 import Constants.{OBJ_BLOB, OBJ_TREE}
 import scala.collection
+import org.eclipse.jgit.lib.FileMode.TREE
 
 object Tree {
 
@@ -52,7 +53,7 @@ object Tree {
 
     private def pathCompare(a: Array[Byte], b: Array[Byte], aMode: FileMode, bMode: FileMode): Int = {
 
-      def lastPathChar(mode: FileMode): Int = if ((FileMode.TREE == mode)) '/' else '\0'
+      def lastPathChar(mode: FileMode): Int = if (mode == TREE) '/' else '\u0000'
 
       var pos = 0
       while (pos < a.length && pos < b.length) {
@@ -160,7 +161,7 @@ case class TreeBlobs(entryMap: Map[FileName, (BlobFileMode, ObjectId)]) extends 
 case class TreeSubtrees(entryMap: Map[FileName, ObjectId]) extends Tree.EntryGrouping {
 
   lazy val treeEntries = entryMap.map {
-    case (name, objectId) => Tree.Entry(name, FileMode.TREE, objectId)
+    case (name, objectId) => Tree.Entry(name, TREE, objectId)
   }
 
   lazy val withoutEmptyTrees = TreeSubtrees(entryMap.filterNot(_._2 == Tree.Empty.objectId))

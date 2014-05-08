@@ -33,6 +33,7 @@ import org.eclipse.jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
 import org.eclipse.jgit.util.FS
 import scala.util.Success
 import scala.util.Try
+import org.eclipse.jgit.internal.storage.file.ObjectDirectory
 
 
 package object git {
@@ -42,23 +43,16 @@ package object git {
     (revWalk, revWalk.getObjectReader)
   }
 
-  class ThreadLocalObjectDatabaseResources(objectDatabase: ObjectDatabase) {
-    private lazy val _reader = new ThreadLocal[ObjectReader] {
-      override def initialValue() = objectDatabase.newReader()
-    }
-
-    private lazy val _inserter = new ThreadLocal[ObjectInserter] {
-      override def initialValue() = objectDatabase.newInserter()
-    }
-
-    def reader() = _reader.get
-
-    def inserter() = _inserter.get
-  }
-
   implicit class RichObjectDatabase(objectDatabase: ObjectDatabase) {
 
     lazy val threadLocalResources = new ThreadLocalObjectDatabaseResources(objectDatabase)
+
+  }
+
+  implicit class RichObjectDirectory(objectDirectory: ObjectDirectory) {
+
+    def packedObjects: Iterable[ObjectId] =
+      for { pack <- objectDirectory.getPacks ; entry <- pack } yield entry.toObjectId
 
   }
 
@@ -73,6 +67,7 @@ package object git {
     }
 
     def nonSymbolicRefs = repo.getAllRefs.values.filterNot(_.isSymbolic)
+
   }
 
   implicit class RichString(str: String) {
@@ -267,10 +262,6 @@ package object git {
     case tree: RevTree => allBlobsUnder(tree)
     case blob: RevBlob => Set(blob)
     case tag: RevTag => allBlobsReachableFrom(tag.getObject)
-  }
-
-  case class SizedObject(objectId: ObjectId, size: Long) extends Ordered[SizedObject] {
-    def compare(that: SizedObject) = size.compareTo(that.size)
   }
 
 }

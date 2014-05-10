@@ -25,6 +25,7 @@ import java.io.File.separatorChar
 import com.madgag.compress.CompressUtil._
 import com.google.common.io.Files
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import java.net.URL
 
 package object test {
   def unpackRepo(fileName: String): Repository = {
@@ -34,8 +35,10 @@ package object test {
   }
 
   def unpackRepoAndGetGitDir(fileName: String) = {
-    val rawZipFileInputStream = getClass.getResource(fileName).openStream()
-    assert(rawZipFileInputStream != null, "Stream for " + fileName + " is null.")
+    val resource: URL = getClass.getResource(fileName)
+    assert(resource != null, s"Resource for $fileName is null.")
+    val rawZipFileInputStream = resource.openStream()
+    assert(rawZipFileInputStream != null, s"Stream for $fileName is null.")
 
     val repoParentFolder = new File(Files.createTempDir(), fileName.replace(separatorChar, '_') + "-unpacked")
     repoParentFolder.mkdir()

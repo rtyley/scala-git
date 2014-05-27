@@ -38,11 +38,6 @@ import org.eclipse.jgit.internal.storage.file.ObjectDirectory
 
 package object git {
 
-  def singleThreadedReaderTuple(repo: Repository) = {
-    val revWalk=new RevWalk(repo)
-    (revWalk, revWalk.getObjectReader)
-  }
-
   implicit class RichObjectDatabase(objectDatabase: ObjectDatabase) {
 
     lazy val threadLocalResources = new ThreadLocalObjectDatabaseResources(objectDatabase)

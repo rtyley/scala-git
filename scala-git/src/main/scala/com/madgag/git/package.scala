@@ -23,17 +23,18 @@ import collection.convert.wrapAsScala._
 import collection.mutable
 import java.io.File
 import language.implicitConversions
-import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
-import org.eclipse.jgit.diff._
-import org.eclipse.jgit.lib._
-import org.eclipse.jgit.revwalk._
-import org.eclipse.jgit.treewalk.TreeWalk
-import org.eclipse.jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
-import org.eclipse.jgit.util.FS
-import scala.util.Success
-import scala.util.Try
-import org.eclipse.jgit.internal.storage.file.ObjectDirectory
+import scala.util.{Success, Try}
+
+import org.eclipse.jgit
+import jgit.api.Git
+import jgit.diff._
+import jgit.lib._
+import jgit.diff.DiffAlgorithm.SupportedAlgorithm
+import jgit.revwalk._
+import jgit.treewalk.TreeWalk
+import jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
+import jgit.internal.storage.file.ObjectDirectory
+import jgit.util.FS
 
 
 package object git {
@@ -66,7 +67,7 @@ package object git {
   }
 
   implicit class RichString(str: String) {
-    def asObjectId = org.eclipse.jgit.lib.ObjectId.fromString(str)
+    def asObjectId = jgit.lib.ObjectId.fromString(str)
   }
 
   implicit class RichRevTree(revTree: RevTree) {

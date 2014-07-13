@@ -53,7 +53,16 @@ package object git {
 
   }
 
-  implicit class RichRepo(repo: Repository) {
+//  trait Treeish[T] {
+//    def toTree: RevTree
+//  }
+//
+//  object Treeish {
+//    implicit object RevCommitToTreeish extends Treeish[RevCommit] { def toTree = t.toString }
+//
+//  }
+
+  implicit class  RichRepo(repo: Repository) {
     lazy val git = new Git(repo)
 
     lazy val topDirectory = if (repo.isBare) repo.getDirectory else repo.getWorkTree

@@ -23,6 +23,7 @@ import collection.convert.wrapAsScala._
 import collection.mutable
 import java.io.File
 import language.implicitConversions
+import scala.annotation.tailrec
 import scala.util.{Success, Try}
 
 import org.eclipse.jgit
@@ -91,8 +92,10 @@ package object git {
   implicit class RichTreeWalk(treeWalk: TreeWalk) {
 
     /**
-     * @param f - note that the function must completely extract all information from the TreeWalk at the
-     *          point of execution, the state of TreeWalk will be altered after execution.
+     * @param f - note that the function must completely extract all
+     *          information from the TreeWalk at the point of
+     *          execution, the state of TreeWalk will be altered after
+     *          execution.
      */
     def map[V](f: TreeWalk => V): Iterator[V] = new Iterator[V] {
       var _hasNext = treeWalk.next()
@@ -236,13 +239,8 @@ package object git {
     DiffEntry.scan(tw)
   }
 
-  def allBlobsUnder(tree: RevTree)(implicit reader: ObjectReader): Set[ObjectId] = {
-    val protectedIds = mutable.Set[ObjectId]()
-
-    for (tw <- tree.walk()) { protectedIds += tw.getObjectId(0) }
-
-    protectedIds.toSet
-  }
+  def allBlobsUnder(tree: RevTree)(implicit reader: ObjectReader): Set[ObjectId] =
+    tree.walk().map(_.getObjectId(0)).toSet
 
   // use ObjectWalk instead ??
   def allBlobsReachableFrom(revisions: Set[String])(implicit repo: Repository): Set[ObjectId] = {
@@ -253,6 +251,7 @@ package object git {
     } reduce (_ ++ _)
   }
 
+  @tailrec
   def allBlobsReachableFrom(revObject: RevObject)(implicit reader: ObjectReader): Set[ObjectId] = revObject match {
     case commit: RevCommit => allBlobsUnder(commit.getTree)
     case tree: RevTree => allBlobsUnder(tree)

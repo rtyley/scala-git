@@ -33,12 +33,31 @@ import jgit.lib._
 import jgit.diff.DiffAlgorithm.SupportedAlgorithm
 import jgit.revwalk._
 import jgit.treewalk.TreeWalk
-import jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
+import org.eclipse.jgit.treewalk.filter.{PathFilterGroup, AndTreeFilter, TreeFilter}
 import jgit.internal.storage.file.ObjectDirectory
 import jgit.util.FS
 
 
 package object git {
+
+  def walk(trees: RevTree*)(
+    filter: TreeFilter,
+    recursive: Boolean = true,
+    postOrderTraversal: Boolean = false)(implicit revWalk: RevWalk) = {
+
+    val tw = new TreeWalk(revWalk.getObjectReader)
+    tw.setRecursive(recursive)
+    tw.setPostOrderTraversal(postOrderTraversal)
+    tw.reset
+
+    for (t <- trees) {
+      tw.addTree(t)
+    }
+
+    tw.setFilter(filter)
+
+    tw
+  }
 
   implicit class RichObjectDatabase(objectDatabase: ObjectDatabase) {
 
@@ -226,18 +245,8 @@ package object git {
     case tag: RevTag => treeOrBlobPointedToBy(revWalk.peel(tag))
   }
 
-  def diff(trees: RevTree*)(implicit revWalk: RevWalk): Seq[DiffEntry] = {
-    val tw = new TreeWalk(revWalk.getObjectReader)
-    tw.setRecursive(true)
-    tw.reset
-
-    for (t <- trees) {
-      tw.addTree(t)
-    }
-
-    tw.setFilter(TreeFilter.ANY_DIFF)
-    DiffEntry.scan(tw)
-  }
+  def diff(trees: RevTree*)(implicit revWalk: RevWalk): Seq[DiffEntry] =
+    DiffEntry.scan(walk(trees: _*)(TreeFilter.ANY_DIFF))
 
   def allBlobsUnder(tree: RevTree)(implicit reader: ObjectReader): Set[ObjectId] =
     tree.walk().map(_.getObjectId(0)).toSet

@@ -43,9 +43,9 @@ package object git {
   def walk(trees: RevTree*)(
     filter: TreeFilter,
     recursive: Boolean = true,
-    postOrderTraversal: Boolean = false)(implicit revWalk: RevWalk) = {
+    postOrderTraversal: Boolean = false)(implicit reader: ObjectReader) = {
 
-    val tw = new TreeWalk(revWalk.getObjectReader)
+    val tw = new TreeWalk(reader)
     tw.setRecursive(recursive)
     tw.setPostOrderTraversal(postOrderTraversal)
     tw.reset
@@ -245,7 +245,7 @@ package object git {
     case tag: RevTag => treeOrBlobPointedToBy(revWalk.peel(tag))
   }
 
-  def diff(trees: RevTree*)(implicit revWalk: RevWalk): Seq[DiffEntry] =
+  def diff(trees: RevTree*)(implicit reader: ObjectReader): Seq[DiffEntry] =
     DiffEntry.scan(walk(trees: _*)(TreeFilter.ANY_DIFF))
 
   def allBlobsUnder(tree: RevTree)(implicit reader: ObjectReader): Set[ObjectId] =

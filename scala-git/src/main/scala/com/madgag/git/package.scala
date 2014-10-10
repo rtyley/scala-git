@@ -146,6 +146,8 @@ package object git {
       while (!res && treeWalk.next()) res = p(treeWalk)
       res
     }
+
+    def slashPrefixedPath = "/" + treeWalk.getPathString
   }
 
   implicit class RichRef(ref: Ref) {

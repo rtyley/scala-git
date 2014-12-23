@@ -8,8 +8,8 @@ import Dependencies._
 object build extends Build {
 
   lazy val baseSettings = ReleasePlugin.releaseSettings ++ sonatypeSettings ++ Seq(
-    scalaVersion := "2.11.2",
-    crossScalaVersions := Seq("2.10.4", "2.11.2"),
+    scalaVersion := "2.11.4",
+    crossScalaVersions := Seq("2.10.4", "2.11.4"),
     organization := "com.madgag.scala-git",
     scmInfo := Some(ScmInfo(
       url("https://github.com/rtyley/scala-git"),

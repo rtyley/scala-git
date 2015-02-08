@@ -31,7 +31,7 @@ object Tree {
   val Empty = Tree(Map.empty[FileName, (FileMode, ObjectId)])
 
   def apply(entries: Traversable[Tree.Entry]): Tree = Tree(entries.map {
-    entry => entry.name ->(entry.fileMode, entry.objectId)
+    entry => entry.name -> ((entry.fileMode, entry.objectId))
   }.toMap)
 
   def entriesFor(objectId: ObjectId)(implicit objectReader: ObjectReader): Seq[Entry] = {
@@ -112,7 +112,7 @@ case class Tree(entryMap: Map[FileName, (FileMode, ObjectId)]) {
 
   lazy val blobs = TreeBlobs(entriesByType(OBJ_BLOB).flatMap {
     e => BlobFileMode(e.fileMode).map {
-      blobFileMode => e.name ->(blobFileMode, e.objectId)
+      blobFileMode => e.name -> ((blobFileMode, e.objectId))
     }
   }.toMap)
 
@@ -139,7 +139,7 @@ object TreeBlobs {
   implicit def entries2Object(entries: Traversable[TreeBlobEntry]) = TreeBlobs(entries)
 
   def apply(entries: Traversable[TreeBlobEntry]): TreeBlobs =
-    TreeBlobs(entries.map(e => e.filename ->(e.mode, e.objectId)).toMap)
+    TreeBlobs(entries.map(e => e.filename -> ((e.mode, e.objectId))).toMap)
 }
 
 case class TreeBlobs(entryMap: Map[FileName, (BlobFileMode, ObjectId)]) extends Tree.EntryGrouping {

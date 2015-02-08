@@ -19,6 +19,8 @@
 
 package com.madgag
 
+import org.eclipse.jgit.lib.ObjectReader.OBJ_ANY
+
 import collection.convert.wrapAsScala._
 import collection.mutable
 import java.io.File
@@ -209,7 +211,7 @@ package object git {
     def open(implicit objectReader: ObjectReader): ObjectLoader = objectReader.open(objectId)
 
     def sizeOpt(implicit objectReader: ObjectReader): Option[Long] =
-      if (objectReader.has(objectId)) Some(objectId.open.getSize) else None
+      Try(objectReader.getObjectSize(objectId, OBJ_ANY)).toOption
 
     def asRevObject(implicit revWalk: RevWalk) = revWalk.parseAny(objectId)
 

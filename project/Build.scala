@@ -1,13 +1,11 @@
-import sbt._, Keys._
-import sbtrelease._
-import ReleaseStateTransformations._
-import com.typesafe.sbt.pgp.PgpKeys
-import xerial.sbt.Sonatype._
-import Dependencies._
+import sbt.Keys._
+import sbt._
+import sbtrelease.ReleasePlugin.autoImport._
+import sbtrelease.ReleaseStateTransformations._
 
 object build extends Build {
 
-  lazy val baseSettings = ReleasePlugin.releaseSettings ++ sonatypeSettings ++ Seq(
+  lazy val baseSettings = Seq(
     scalaVersion := "2.11.7",
     crossScalaVersions := Seq("2.10.5", scalaVersion.value),
     organization := "com.madgag.scala-git",
@@ -28,7 +26,7 @@ object build extends Build {
     ),
     licenses := Seq("GPLv3" -> url("http://www.gnu.org/licenses/gpl-3.0.html")),
     scalacOptions ++= Seq("-deprecation", "-Xlint", "-unchecked"),
-    ReleasePlugin.ReleaseKeys.releaseProcess := Seq[ReleaseStep](
+    releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
       runClean,
@@ -36,19 +34,10 @@ object build extends Build {
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      ReleaseStep(
-        action = { state =>
-          val extracted = Project extract state
-          extracted.runAggregated(PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
-        },
-        enableCrossBuild = true
-      ),
+      ReleaseStep(action = Command.process("publishSigned", _)),
       setNextVersion,
       commitNextVersion,
-      ReleaseStep{ state =>
-        val extracted = Project extract state
-        extracted.runAggregated(SonatypeKeys.sonatypeReleaseAll in Global in extracted.get(thisProjectRef), state)
-      },
+      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
       pushChanges
     )
   )

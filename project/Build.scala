@@ -14,16 +14,6 @@ object build extends Build {
       "scm:git:git@github.com:rtyley/scala-git.git"
     )),
     description := "Scala veneer for JGit",
-    pomExtra := (
-      <url>https://github.com/rtyley/scala-git</url>
-      <developers>
-        <developer>
-          <id>rtyley</id>
-          <name>Roberto Tyley</name>
-          <url>https://github.com/rtyley</url>
-        </developer>
-      </developers>
-    ),
     licenses := Seq("GPLv3" -> url("http://www.gnu.org/licenses/gpl-3.0.html")),
     scalacOptions ++= Seq("-deprecation", "-Xlint", "-unchecked"),
     releaseProcess := Seq[ReleaseStep](

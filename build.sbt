@@ -12,11 +12,11 @@ lazy val baseSettings = Seq(
   scalacOptions ++= Seq("-deprecation", "-Xlint", "-unchecked")
 )
 
-lazy val scalaGit = project.in(file("scala-git")).settings(baseSettings: _*).dependsOn(scalaGitTest % "test")
+lazy val `scala-git` = project.settings(baseSettings: _*).dependsOn(`scala-git-test` % "test")
 
-lazy val scalaGitTest = project.in(file("scala-git-test")).settings(baseSettings: _*)
+lazy val `scala-git-test` = project.in(file("scala-git-test")).settings(baseSettings: _*)
 
-lazy val root = (project in file(".")).aggregate(scalaGit, scalaGitTest).
+lazy val root = (project in file(".")).aggregate(`scala-git`, `scala-git-test`).
   settings(baseSettings: _*).settings(
     publishArtifact := false,
     publish := {},

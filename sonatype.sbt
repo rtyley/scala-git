@@ -1,6 +1,6 @@
 sonatypeProfileName := "com.madgag"
 
-pomExtra := (
+pomExtra in ThisBuild := (
   <url>https://github.com/rtyley/scala-git</url>
     <developers>
       <developer>

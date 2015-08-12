@@ -8,7 +8,7 @@ lazy val baseSettings = Seq(
     url("https://github.com/rtyley/scala-git"),
     "scm:git:git@github.com:rtyley/scala-git.git"
   )),
-  licenses := Seq("GPLv3" -> url("http://www.gnu.org/licenses/gpl-3.0.html")),
+  licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   scalacOptions ++= Seq("-deprecation", "-Xlint", "-unchecked")
 )
 

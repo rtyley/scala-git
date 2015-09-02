@@ -16,6 +16,8 @@
 
 package com.madgag
 
+import java.nio.charset.Charset
+
 import org.eclipse.jgit.lib.ObjectReader.OBJ_ANY
 
 import collection.convert.wrapAsScala._
@@ -38,6 +40,10 @@ import jgit.util.FS
 
 
 package object git {
+
+  def storeBlob(bytes: Array[Byte])(implicit i: ObjectInserter): ObjectId = i.insert(Constants.OBJ_BLOB, bytes)
+
+  def storeBlob(text: String)(implicit i: ObjectInserter, charset: Charset): ObjectId = storeBlob(text.getBytes(charset))
 
   def walk(trees: RevTree*)(
     filter: TreeFilter,
@@ -207,8 +213,10 @@ package object git {
   implicit class RichObjectId(objectId: AnyObjectId) {
     def open(implicit objectReader: ObjectReader): ObjectLoader = objectReader.open(objectId)
 
-    def sizeOpt(implicit objectReader: ObjectReader): Option[Long] =
-      Try(objectReader.getObjectSize(objectId, OBJ_ANY)).toOption
+    def sizeOpt(implicit objectReader: ObjectReader): Option[Long] = sizeTry.toOption
+
+    def sizeTry(implicit objectReader: ObjectReader): Try[Long] =
+      Try(objectReader.getObjectSize(objectId, OBJ_ANY))
 
     def asRevObject(implicit revWalk: RevWalk) = revWalk.parseAny(objectId)
 

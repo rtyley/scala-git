@@ -16,19 +16,20 @@
 
 package com.madgag.git
 
-import org.eclipse.jgit.lib.Repository
 import java.io.File
 import java.io.File.separatorChar
-import com.madgag.compress.CompressUtil._
-import com.google.common.io.Files
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import java.net.URL
 
+import com.google.common.io.Files
+import com.madgag.compress.CompressUtil._
+import org.eclipse.jgit.internal.storage.file.FileRepository
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+
 package object test {
-  def unpackRepo(fileName: String): Repository = {
+  def unpackRepo(fileName: String): FileRepository = {
     val resolvedGitDir = unpackRepoAndGetGitDir(fileName)
     require(resolvedGitDir.exists)
-    FileRepositoryBuilder.create(resolvedGitDir)
+    FileRepositoryBuilder.create(resolvedGitDir).asInstanceOf[FileRepository]
   }
 
   def unpackRepoAndGetGitDir(fileName: String) = {

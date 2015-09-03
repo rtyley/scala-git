@@ -18,6 +18,7 @@ package com.madgag
 
 import java.nio.charset.Charset
 
+import org.eclipse.jgit.lib.ObjectInserter.Formatter
 import org.eclipse.jgit.lib.ObjectReader.OBJ_ANY
 
 import collection.convert.wrapAsScala._
@@ -40,6 +41,8 @@ import jgit.util.FS
 
 
 package object git {
+
+  val ObjectFormatter = new Formatter
 
   def storeBlob(bytes: Array[Byte])(implicit i: ObjectInserter): ObjectId = i.insert(Constants.OBJ_BLOB, bytes)
 

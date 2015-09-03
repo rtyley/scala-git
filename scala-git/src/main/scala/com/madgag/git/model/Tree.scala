@@ -31,9 +31,11 @@ object Tree {
     entry => entry.name -> ((entry.fileMode, entry.objectId))
   }.toMap)
 
-  def entriesFor(objectId: ObjectId)(implicit objectReader: ObjectReader): Seq[Entry] = {
+  def apply(objectId: ObjectId)(implicit reader: ObjectReader): Tree = Tree(entriesFor(objectId))
+
+  def entriesFor(objectId: ObjectId)(implicit reader: ObjectReader): Seq[Entry] = {
     val treeParser = new CanonicalTreeParser
-    treeParser.reset(objectReader, objectId)
+    treeParser.reset(reader, objectId)
     val entries = collection.mutable.Buffer[Entry]()
     while (!treeParser.eof) {
       entries += Entry(treeParser)
@@ -146,12 +148,8 @@ case class TreeBlobs(entryMap: Map[FileName, (BlobFileMode, ObjectId)]) extends 
   }
 
   lazy val treeEntries = entries.map(_.toTreeEntry)
-  //
-  //  def filter(p: ObjectId => Boolean): TreeBlobs = {
-  //    TreeBlobs(entries.filter {
-  //      case TreeBlobEntry(_, _ , objectId) => p(objectId)
-  //    })
-  //  }
+
+  def objectId(fileName: FileName) = entryMap.get(fileName).map(_._2)
 
 }
 

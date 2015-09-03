@@ -16,28 +16,26 @@
 
 package com.madgag
 
+import java.io.File
 import java.nio.charset.Charset
 
+import org.eclipse.jgit
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
+import org.eclipse.jgit.diff._
+import org.eclipse.jgit.internal.storage.file.ObjectDirectory
 import org.eclipse.jgit.lib.ObjectInserter.Formatter
 import org.eclipse.jgit.lib.ObjectReader.OBJ_ANY
+import org.eclipse.jgit.lib._
+import org.eclipse.jgit.revwalk._
+import org.eclipse.jgit.treewalk.TreeWalk
+import org.eclipse.jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
+import org.eclipse.jgit.util.FS
 
-import collection.convert.wrapAsScala._
-import collection.mutable
-import java.io.File
-import language.implicitConversions
 import scala.annotation.tailrec
+import scala.collection.convert.wrapAsScala._
+import scala.language.implicitConversions
 import scala.util.{Success, Try}
-
-import org.eclipse.jgit
-import jgit.api.Git
-import jgit.diff._
-import jgit.lib._
-import jgit.diff.DiffAlgorithm.SupportedAlgorithm
-import jgit.revwalk._
-import jgit.treewalk.TreeWalk
-import org.eclipse.jgit.treewalk.filter.{PathFilterGroup, AndTreeFilter, TreeFilter}
-import jgit.internal.storage.file.ObjectDirectory
-import jgit.util.FS
 
 
 package object git {
@@ -186,7 +184,7 @@ package object git {
 
   implicit class RichDiffEntry(diffEntry: DiffEntry) {
     import DiffEntry.Side
-    import Side.{OLD,NEW}
+    import Side.{NEW, OLD}
 
     def isDiffableType(side: Side) =
       // diffEntry.getMode(side) != FileMode.GITLINK &&

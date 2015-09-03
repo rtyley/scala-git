@@ -16,6 +16,7 @@
 
 package com.madgag.git.bfg.model
 
+import com.madgag.diff.MapDiff
 import org.eclipse.jgit.lib._
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
 
@@ -43,8 +44,6 @@ object Tree {
     }
     entries
   }
-
-  // def apply(objectId: ObjectId)(implicit objectReader: ObjectReader) = Tree(entriesFor(objectId))
 
   case class Entry(name: FileName, fileMode: FileMode, objectId: ObjectId) extends Ordered[Entry] {
 
@@ -151,6 +150,7 @@ case class TreeBlobs(entryMap: Map[FileName, (BlobFileMode, ObjectId)]) extends 
 
   def objectId(fileName: FileName) = entryMap.get(fileName).map(_._2)
 
+  def diff(otherTreeBlobs: TreeBlobs) = MapDiff(entryMap, otherTreeBlobs.entryMap)
 }
 
 case class TreeSubtrees(entryMap: Map[FileName, ObjectId]) extends Tree.EntryGrouping {

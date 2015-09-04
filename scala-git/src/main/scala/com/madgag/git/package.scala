@@ -24,6 +24,7 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
 import org.eclipse.jgit.diff._
 import org.eclipse.jgit.internal.storage.file.ObjectDirectory
+import org.eclipse.jgit.lib.Constants.OBJ_BLOB
 import org.eclipse.jgit.lib.ObjectInserter.Formatter
 import org.eclipse.jgit.lib.ObjectReader.OBJ_ANY
 import org.eclipse.jgit.lib._
@@ -42,7 +43,11 @@ package object git {
 
   val ObjectFormatter = new Formatter
 
-  def storeBlob(bytes: Array[Byte])(implicit i: ObjectInserter): ObjectId = i.insert(Constants.OBJ_BLOB, bytes)
+  implicit class RichByteArray(bytes: Array[Byte]) {
+    lazy val blobId = ObjectFormatter.idFor(OBJ_BLOB, bytes)
+  }
+
+  def storeBlob(bytes: Array[Byte])(implicit i: ObjectInserter): ObjectId = i.insert(OBJ_BLOB, bytes)
 
   def storeBlob(text: String)(implicit i: ObjectInserter, charset: Charset): ObjectId = storeBlob(text.getBytes(charset))
 
@@ -188,7 +193,7 @@ package object git {
 
     def isDiffableType(side: Side) =
       // diffEntry.getMode(side) != FileMode.GITLINK &&
-        diffEntry.getId(side) != null && diffEntry.getMode(side).getObjectType == Constants.OBJ_BLOB
+        diffEntry.getId(side) != null && diffEntry.getMode(side).getObjectType == OBJ_BLOB
 
     lazy val bothSidesDiffableType: Boolean = Side.values().map(isDiffableType).forall(d => d)
 

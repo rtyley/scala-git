@@ -24,7 +24,7 @@ object FileName {
   object ImplicitConversions {
     import language.implicitConversions
 
-    implicit def string2FileName(str: String) = new FileName(Constants.encode(str))
+    implicit def string2FileName(str: String) = FileName(str)
 
     implicit def filename2String(fileName: FileName) = fileName.string
   }

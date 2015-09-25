@@ -41,10 +41,8 @@ import scala.util.{Success, Try}
 
 package object git {
 
-  val ObjectFormatter = new Formatter
-
   implicit class RichByteArray(bytes: Array[Byte]) {
-    lazy val blobId = ObjectFormatter.idFor(OBJ_BLOB, bytes)
+    lazy val blobId = (new Formatter).idFor(OBJ_BLOB, bytes)
   }
 
   def storeBlob(bytes: Array[Byte])(implicit i: ObjectInserter): ObjectId = i.insert(OBJ_BLOB, bytes)

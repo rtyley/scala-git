@@ -226,6 +226,9 @@ package object git {
 
     def asRevCommit(implicit revWalk: RevWalk) = revWalk.parseCommit(objectId)
 
+    def asRevCommitOpt(implicit revWalk: RevWalk): Option[RevCommit] =
+      if (revWalk.getObjectReader.has(objectId)) Some(objectId.asRevCommit) else None
+
     def asRevTag(implicit revWalk: RevWalk) = revWalk.parseTag(objectId)
 
     def asRevTree(implicit revWalk: RevWalk) = revWalk.parseTree(objectId)

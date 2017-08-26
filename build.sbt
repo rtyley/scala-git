@@ -1,8 +1,8 @@
 import ReleaseTransformations._
 
 lazy val baseSettings = Seq(
-  scalaVersion := "2.11.7",
-  crossScalaVersions := Seq("2.10.5", scalaVersion.value),
+  scalaVersion := "2.11.11",
+  crossScalaVersions := Seq(scalaVersion.value, "2.10.6"),
   organization := "com.madgag.scala-git",
   scmInfo := Some(ScmInfo(
     url("https://github.com/rtyley/scala-git"),
@@ -16,23 +16,28 @@ lazy val `scala-git` = project.settings(baseSettings: _*).dependsOn(`scala-git-t
 
 lazy val `scala-git-test` = project.in(file("scala-git-test")).settings(baseSettings: _*)
 
+releasePublishArtifactsAction in ThisBuild := PgpKeys.publishSigned.value // Use publishSigned in publishArtifacts step
+
 lazy val root = (project in file(".")).aggregate(`scala-git`, `scala-git-test`).
   settings(baseSettings: _*).settings(
-    publishArtifact := false,
-    publish := {},
-    publishLocal := {},
-    releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
-      inquireVersions,
-      runClean,
-      runTest,
-      setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
-      ReleaseStep(action = Command.process("publishSigned", _)),
-      setNextVersion,
-      commitNextVersion,
-      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
-      pushChanges
-    )
+  publishArtifact := false,
+  publish := {},
+  publishLocal := {},
+  releaseCrossBuild := true, // true if you cross-build the project for multiple Scala versions
+  releaseProcess := Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    runTest,
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    publishArtifacts,
+    setNextVersion,
+    commitNextVersion,
+    releaseStepCommand("sonatypeReleaseAll"),
+    pushChanges
   )
+)
+
+

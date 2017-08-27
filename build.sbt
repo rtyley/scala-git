@@ -16,8 +16,6 @@ lazy val `scala-git` = project.settings(baseSettings: _*).dependsOn(`scala-git-t
 
 lazy val `scala-git-test` = project.in(file("scala-git-test")).settings(baseSettings: _*)
 
-releasePublishArtifactsAction in ThisBuild := PgpKeys.publishSigned.value // Use publishSigned in publishArtifacts step
-
 lazy val root = (project in file(".")).aggregate(`scala-git`, `scala-git-test`).
   settings(baseSettings: _*).settings(
   publishArtifact := false,
@@ -32,7 +30,7 @@ lazy val root = (project in file(".")).aggregate(`scala-git`, `scala-git-test`).
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    publishArtifacts,
+    releaseStepCommand("publishSigned"),
     setNextVersion,
     commitNextVersion,
     releaseStepCommand("sonatypeReleaseAll"),

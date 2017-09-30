@@ -16,19 +16,17 @@
 
 package com.madgag.git
 
-import org.specs2.mutable._
+import org.scalatest.{FlatSpec, Matchers}
 import com.madgag.git.test._
 
 
-class ReachableBlobSpec extends Specification {
+class ReachableBlobSpec extends FlatSpec with Matchers {
 
   implicit val repo = unpackRepo("/sample-repos/example.git.zip")
 
-  "reachable blobs" should {
-    "match expectations" in {
-      implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+  "reachable blobs" should "match expectations" in {
+    implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
 
-      allBlobsReachableFrom(abbrId("475d") asRevCommit) mustEqual Set("d8d1", "34bd", "e69d", "c784", "d004").map(abbrId)
-    }
+    allBlobsReachableFrom(abbrId("475d") asRevCommit) shouldBe Set("d8d1", "34bd", "e69d", "c784", "d004").map(abbrId)
   }
 }

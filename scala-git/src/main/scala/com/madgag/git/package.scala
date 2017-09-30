@@ -34,7 +34,7 @@ import org.eclipse.jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
 import org.eclipse.jgit.util.FS
 
 import scala.annotation.tailrec
-import scala.collection.convert.wrapAsScala._
+import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 import scala.util.{Success, Try}
 
@@ -77,7 +77,7 @@ package object git {
   implicit class RichObjectDirectory(objectDirectory: ObjectDirectory) {
 
     def packedObjects: Iterable[ObjectId] =
-      for { pack <- objectDirectory.getPacks ; entry <- pack } yield entry.toObjectId
+      for { pack <- objectDirectory.getPacks.asScala ; entry <- pack.asScala } yield entry.toObjectId
 
   }
 
@@ -91,7 +91,7 @@ package object git {
       (revWalk, revWalk.getObjectReader)
     }
 
-    def nonSymbolicRefs = repo.getAllRefs.values.filterNot(_.isSymbolic)
+    def nonSymbolicRefs = repo.getAllRefs.asScala.values.filterNot(_.isSymbolic)
 
   }
 
@@ -237,7 +237,7 @@ package object git {
   }
 
   implicit class RichObjectReader(reader: ObjectReader) {
-    def resolveUniquely(id: AbbreviatedObjectId): Try[ObjectId] = Try(reader.resolve(id).toList).flatMap {
+    def resolveUniquely(id: AbbreviatedObjectId): Try[ObjectId] = Try(reader.resolve(id).asScala.toList).flatMap {
       _ match {
         case fullId :: Nil => Success(fullId)
         case ids => val resolution = if (ids.isEmpty) "no Git object" else s"${ids.size} objects : ${ids.map(reader.abbreviate).map(_.name).mkString(",")}"
@@ -262,7 +262,7 @@ package object git {
   }
 
   def diff(trees: RevTree*)(implicit reader: ObjectReader): Seq[DiffEntry] =
-    DiffEntry.scan(walk(trees: _*)(TreeFilter.ANY_DIFF))
+    DiffEntry.scan(walk(trees: _*)(TreeFilter.ANY_DIFF)).asScala
 
   def allBlobsUnder(tree: RevTree)(implicit reader: ObjectReader): Set[ObjectId] =
     tree.walk().map(_.getObjectId(0)).toSet

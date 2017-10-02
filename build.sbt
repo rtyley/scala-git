@@ -1,8 +1,8 @@
 import ReleaseTransformations._
 
 lazy val baseSettings = Seq(
-  scalaVersion := "2.11.11",
-  crossScalaVersions := Seq(scalaVersion.value, "2.10.6"),
+  scalaVersion := "2.12.3",
+  crossScalaVersions := Seq(scalaVersion.value, "2.11.11"),
   organization := "com.madgag.scala-git",
   scmInfo := Some(ScmInfo(
     url("https://github.com/rtyley/scala-git"),

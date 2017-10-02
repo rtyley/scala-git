@@ -16,71 +16,72 @@
 
 package com.madgag.git
 
-import org.specs2.mutable._
-import collection.mutable
 import com.madgag.git.test._
+import org.scalatest.{FlatSpec, Matchers}
 
+import scala.collection.mutable
 
-class RichTreeWalkSpec extends Specification {
+class RichTreeWalkSpec extends FlatSpec with Matchers {
 
    implicit val repo = unpackRepo("/sample-repos/example.git.zip")
 
-   "rich tree" should {
-     "implement exists" in {
-       implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+   "rich tree" should "implement exists" in {
+     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
 
-       val tree = abbrId("830e").asRevTree
+     val tree = abbrId("830e").asRevTree
 
-       tree.walk().exists(_.getNameString == "one-kb-random") must beTrue
-       tree.walk().exists(_.getNameString == "chimera") must beFalse
-     }
-     "implement map" in {
-       implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     tree.walk().exists(_.getNameString == "one-kb-random") shouldBe true
+     tree.walk().exists(_.getNameString == "chimera") shouldBe false
+   }
 
-       val tree = abbrId("830e").asRevTree
+   it should "implement map" in {
+     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
 
-       val fileNameList = tree.walk().map(_.getNameString).toList
+     val tree = abbrId("830e").asRevTree
 
-       fileNameList must haveSize(6)
+     val fileNameList = tree.walk().map(_.getNameString).toList
 
-       fileNameList.groupBy(identity).mapValues(_.size) must havePair("zero" -> 2)
-     }
-     "implement withFilter" in {
-       implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     fileNameList should have size 6
 
-       val tree = abbrId("830e").asRevTree
+     fileNameList.groupBy(identity).mapValues(_.size) should contain ("zero" -> 2)
+   }
 
-       val filteredTreeWalk = tree.walk().withFilter(_.getNameString != "zero")
+   it should "implement withFilter" in {
+     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
 
-       val filenames = filteredTreeWalk.map(_.getNameString).toList
+     val tree = abbrId("830e").asRevTree
 
-       filenames must haveSize(4)
+     val filteredTreeWalk = tree.walk().withFilter(_.getNameString != "zero")
 
-       filenames must not contain "zero"
-     }
-     "implement foreach" in {
-       implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     val filenames = filteredTreeWalk.map(_.getNameString).toList
 
-       val tree = abbrId("830e").asRevTree
+     filenames should have size 4
 
-       val fileNames = mutable.Buffer[String]()
+     filenames should not contain "zero"
+   }
 
-       tree.walk().foreach(tw => fileNames += tw.getNameString)
+   it should "implement foreach" in {
+     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
 
-       fileNames.toList must haveSize(6)
-     }
-     "work with for comprehensions" in {
-       implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     val tree = abbrId("830e").asRevTree
 
-       val tree = abbrId("830e").asRevTree
+     val fileNames = mutable.Buffer[String]()
 
-       for (t <- tree.walk()) yield t.getNameString
+     tree.walk().foreach(tw => fileNames += tw.getNameString)
 
-       for (t <- tree.walk()) { t.getNameString }
+     fileNames.toList should have size 6
+   }
 
-       for (t <- tree.walk() if t.getNameString == "zero") { t.getDepth }
+   it should "work with for comprehensions" in {
+     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
 
-       success
-     }
+     val tree = abbrId("830e").asRevTree
+
+     for (t <- tree.walk()) yield t.getNameString
+
+     for (t <- tree.walk()) { t.getNameString }
+
+     for (t <- tree.walk() if t.getNameString == "zero") { t.getDepth }
+
    }
  }

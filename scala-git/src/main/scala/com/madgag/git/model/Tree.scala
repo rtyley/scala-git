@@ -42,7 +42,7 @@ object Tree {
       entries += Entry(treeParser)
       treeParser.next()
     }
-    entries
+    entries.toSeq
   }
 
   case class Entry(name: FileName, fileMode: FileMode, objectId: ObjectId) extends Ordered[Entry] {

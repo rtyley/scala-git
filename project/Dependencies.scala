@@ -6,7 +6,7 @@ object Dependencies {
   val eclipseJgit = "org.eclipse.jgit" % "org.eclipse.jgit" % "4.0.1.201506240215-r"
   val jgit = eclipseJgit
 
-  val scalatest = "org.scalatest" %% "scalatest" % "3.0.4"
+  val scalatest = "org.scalatest" %% "scalatest" % "3.0.8"
 
   val madgagCompress = "com.madgag" % "util-compress" % "1.33"
 

@@ -262,7 +262,7 @@ package object git {
   }
 
   def diff(trees: RevTree*)(implicit reader: ObjectReader): Seq[DiffEntry] =
-    DiffEntry.scan(walk(trees: _*)(TreeFilter.ANY_DIFF)).asScala
+    DiffEntry.scan(walk(trees: _*)(TreeFilter.ANY_DIFF)).asScala.toSeq
 
   def allBlobsUnder(tree: RevTree)(implicit reader: ObjectReader): Set[ObjectId] =
     tree.walk().map(_.getObjectId(0)).toSet

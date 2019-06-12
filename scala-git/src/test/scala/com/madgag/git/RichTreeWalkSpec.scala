@@ -43,7 +43,7 @@ class RichTreeWalkSpec extends FlatSpec with Matchers {
 
      fileNameList should have size 6
 
-     fileNameList.groupBy(identity).mapValues(_.size) should contain ("zero" -> 2)
+     fileNameList.groupBy(identity).mapValues(_.size).toMap should contain ("zero" -> 2)
    }
 
    it should "implement withFilter" in {

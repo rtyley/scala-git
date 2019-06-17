@@ -28,7 +28,7 @@ object Tree {
 
   val Empty = Tree(Map.empty[FileName, (FileMode, ObjectId)])
 
-  def apply(entries: Traversable[Tree.Entry]): Tree = Tree(entries.map {
+  def apply(entries: Iterable[Tree.Entry]): Tree = Tree(entries.map {
     entry => entry.name -> ((entry.fileMode, entry.objectId))
   }.toMap)
 
@@ -42,7 +42,7 @@ object Tree {
       entries += Entry(treeParser)
       treeParser.next()
     }
-    entries
+    entries.toSeq
   }
 
   case class Entry(name: FileName, fileMode: FileMode, objectId: ObjectId) extends Ordered[Entry] {
@@ -91,7 +91,7 @@ case class Tree(entryMap: Map[FileName, (FileMode, ObjectId)]) {
 
   protected def repr = this
 
-  lazy val entries = entryMap.map {
+  lazy val entries: Iterable[Tree.Entry] = entryMap.map {
     case (name, (fileMode, objectId)) => Tree.Entry(name, fileMode, objectId)
   }
 
@@ -134,19 +134,19 @@ case class TreeBlobEntry(filename: FileName, mode: BlobFileMode, objectId: Objec
 object TreeBlobs {
   import language.implicitConversions
 
-  implicit def entries2Object(entries: Traversable[TreeBlobEntry]) = TreeBlobs(entries)
+  implicit def entries2Object(entries: Iterable[TreeBlobEntry]) = TreeBlobs(entries)
 
-  def apply(entries: Traversable[TreeBlobEntry]): TreeBlobs =
+  def apply(entries: Iterable[TreeBlobEntry]): TreeBlobs =
     TreeBlobs(entries.map(e => e.filename -> ((e.mode, e.objectId))).toMap)
 }
 
 case class TreeBlobs(entryMap: Map[FileName, (BlobFileMode, ObjectId)]) extends Tree.EntryGrouping {
 
-  lazy val entries = entryMap.map {
+  lazy val entries: Iterable[TreeBlobEntry] = entryMap.map {
     case (name, (blobFileMode, objectId)) => TreeBlobEntry(name, blobFileMode, objectId)
   }
 
-  lazy val treeEntries = entries.map(_.toTreeEntry)
+  lazy val treeEntries: Iterable[Tree.Entry] = entries.map(_.toTreeEntry)
 
   def objectId(fileName: FileName) = entryMap.get(fileName).map(_._2)
 

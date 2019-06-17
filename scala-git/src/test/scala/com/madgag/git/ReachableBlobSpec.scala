@@ -18,7 +18,7 @@ package com.madgag.git
 
 import org.scalatest.{FlatSpec, Matchers}
 import com.madgag.git.test._
-
+import scala.language.postfixOps
 
 class ReachableBlobSpec extends FlatSpec with Matchers {
 

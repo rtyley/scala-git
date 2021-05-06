@@ -1,16 +1,19 @@
 language: scala
 scala:
-   - 2.13.0
-   - 2.12.8
+  - 2.13.5
+  - 3.0.0-RC3
 
 jdk:
   - openjdk8
+  - openjdk11
 
-sudo: false
+before_cache:
+  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
+
 cache:
   directories:
-  - $HOME/.sbt
-  - $HOME/.ivy2
-before_cache:
-  - find $HOME/.sbt -name "*.lock" -type f -delete
-  - find $HOME/.ivy2/cache -name "*[\[\]\(\)]*.properties" -type f -delete
+    - $HOME/.cache/coursier
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt

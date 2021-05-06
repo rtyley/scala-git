@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.madgag.git.bfg.model
+package com.madgag.git.model
 
 import com.madgag.diff.MapDiff
 import org.eclipse.jgit.lib._
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
 
 import Constants.{OBJ_BLOB, OBJ_TREE}
-import scala.collection
 import org.eclipse.jgit.lib.FileMode.TREE
 
 object Tree {
@@ -82,7 +81,7 @@ object Tree {
   }
 
   trait EntryGrouping {
-    val treeEntries: Traversable[Tree.Entry]
+    def treeEntries: Iterable[Tree.Entry]
   }
 
 }
@@ -134,7 +133,7 @@ case class TreeBlobEntry(filename: FileName, mode: BlobFileMode, objectId: Objec
 object TreeBlobs {
   import language.implicitConversions
 
-  implicit def entries2Object(entries: Iterable[TreeBlobEntry]) = TreeBlobs(entries)
+  implicit def entries2Object(entries: Iterable[TreeBlobEntry]): TreeBlobs = TreeBlobs(entries)
 
   def apply(entries: Iterable[TreeBlobEntry]): TreeBlobs =
     TreeBlobs(entries.map(e => e.filename -> ((e.mode, e.objectId))).toMap)

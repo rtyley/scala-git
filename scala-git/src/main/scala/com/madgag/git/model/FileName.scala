@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.madgag.git.bfg.model
+package com.madgag.git.model
 
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.util.RawParseUtils
@@ -24,9 +24,9 @@ object FileName {
   object ImplicitConversions {
     import language.implicitConversions
 
-    implicit def string2FileName(str: String) = FileName(str)
+    implicit def string2FileName(str: String): FileName = FileName(str)
 
-    implicit def filename2String(fileName: FileName) = fileName.string
+    implicit def filename2String(fileName: FileName): String = fileName.string
   }
 
   def apply(name: String): FileName = {
@@ -44,7 +44,7 @@ class FileName(val bytes: Array[Byte]) {
 
   override lazy val hashCode: Int = java.util.Arrays.hashCode(bytes)
 
-  lazy val string = RawParseUtils.decode(bytes)
+  lazy val string: String = RawParseUtils.decode(bytes)
 
   override def toString = string
 

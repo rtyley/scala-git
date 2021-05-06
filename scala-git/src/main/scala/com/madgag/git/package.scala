@@ -33,16 +33,16 @@ import org.eclipse.jgit.treewalk.TreeWalk
 import org.eclipse.jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
 import org.eclipse.jgit.util.FS
 
-import scala.annotation.tailrec
-import scala.collection.JavaConverters._
-import scala.language.implicitConversions
-import scala.util.{Success, Try}
+import _root_.scala.annotation.tailrec
+import _root_.scala.jdk.CollectionConverters._
+import _root_.scala.language.implicitConversions
+import _root_.scala.util.{Success, Try}
 
 
 package object git {
 
   implicit class RichByteArray(bytes: Array[Byte]) {
-    lazy val blobId = (new Formatter).idFor(OBJ_BLOB, bytes)
+    lazy val blobId: ObjectId = (new Formatter).idFor(OBJ_BLOB, bytes)
   }
 
   def storeBlob(bytes: Array[Byte])(implicit i: ObjectInserter): ObjectId = i.insert(OBJ_BLOB, bytes)
@@ -144,7 +144,7 @@ package object git {
     }
 
 
-    def foreach[U](f: TreeWalk => U) {
+    def foreach[U](f: TreeWalk => U): Unit = {
       while (treeWalk.next()) {
         f(treeWalk)
       }
@@ -169,7 +169,7 @@ package object git {
   implicit class RichRevObject(revObject: RevObject) {
     lazy val typeString = Constants.typeString(revObject.getType)
 
-    def toTree(implicit revWalk: RevWalk): Option[RevTree] = treeOrBlobPointedToBy(revObject).right.toOption
+    def toTree(implicit revWalk: RevWalk): Option[RevTree] = treeOrBlobPointedToBy(revObject).toOption
   }
 
   val FileModeNames = Map(
@@ -269,10 +269,10 @@ package object git {
 
   // use ObjectWalk instead ??
   def allBlobsReachableFrom(revisions: Set[String])(implicit repo: Repository): Set[ObjectId] = {
-    implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+    implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
-    revisions.map(repo.resolve).toSet.map {
-      objectId: ObjectId => allBlobsReachableFrom(objectId.asRevObject)
+    revisions.map(repo.resolve).map {
+      objectId => allBlobsReachableFrom(objectId.asRevObject)
     } reduce (_ ++ _)
   }
 

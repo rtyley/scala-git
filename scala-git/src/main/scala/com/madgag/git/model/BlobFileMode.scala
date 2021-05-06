@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.madgag.git.bfg.model
+package com.madgag.git.model
 
 import org.eclipse.jgit.lib.FileMode
 

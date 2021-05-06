@@ -1,14 +1,13 @@
 sonatypeProfileName := "com.madgag"
 
-publishTo in ThisBuild :=
-  Some(if (isSnapshot.value) Opts.resolver.sonatypeSnapshots else Opts.resolver.sonatypeStaging)
+publishTo := sonatypePublishToBundle.value
 
-scmInfo in ThisBuild := Some(ScmInfo(
+scmInfo := Some(ScmInfo(
   url("https://github.com/rtyley/scala-git"),
   "scm:git:git@github.com:rtyley/scala-git.git"
 ))
 
-pomExtra in ThisBuild := (
+ThisBuild / pomExtra := (
   <url>https://github.com/rtyley/scala-git</url>
     <developers>
       <developer>

@@ -16,3 +16,8 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 .idea
+
+# Eclipse-IDE specific
+.project
+.classpath
+.settings/

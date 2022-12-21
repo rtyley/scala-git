@@ -24,9 +24,9 @@ object FileName {
   object ImplicitConversions {
     import language.implicitConversions
 
-    implicit def string2FileName(str: String) = FileName(str)
+    implicit def string2FileName(str: String): FileName = FileName(str)
 
-    implicit def filename2String(fileName: FileName) = fileName.string
+    implicit def filename2String(fileName: FileName): String = fileName.string
   }
 
   def apply(name: String): FileName = {

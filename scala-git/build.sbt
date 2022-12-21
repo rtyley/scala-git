@@ -4,5 +4,6 @@ description := "Scala veneer for JGit"
 
 libraryDependencies ++= Seq(
   jgit,
-  scalatest % "test"
+  "com.madgag" %% "scala-collection-plus" % "0.11",
+  scalatest % Test
 )

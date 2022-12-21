@@ -19,6 +19,12 @@ package com.madgag
 import java.io.File
 import java.nio.charset.Charset
 
+import _root_.scala.jdk.CollectionConverters._
+import _root_.scala.annotation.tailrec
+import _root_.scala.language.implicitConversions
+import _root_.scala.util.{Success, Try}
+
+
 import org.eclipse.jgit
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
@@ -33,10 +39,7 @@ import org.eclipse.jgit.treewalk.TreeWalk
 import org.eclipse.jgit.treewalk.filter.{AndTreeFilter, TreeFilter}
 import org.eclipse.jgit.util.FS
 
-import scala.annotation.tailrec
-import scala.collection.JavaConverters._
-import scala.language.implicitConversions
-import scala.util.{Success, Try}
+
 
 
 package object git {
@@ -86,7 +89,7 @@ package object git {
 
     lazy val topDirectory = if (repo.isBare) repo.getDirectory else repo.getWorkTree
 
-    def singleThreadedReaderTuple = {
+    def singleThreadedReaderTuple: (RevWalk, ObjectReader) = {
       val revWalk=new RevWalk(repo)
       (revWalk, revWalk.getObjectReader)
     }
@@ -144,7 +147,7 @@ package object git {
     }
 
 
-    def foreach[U](f: TreeWalk => U) {
+    def foreach[U](f: TreeWalk => U): Unit = {
       while (treeWalk.next()) {
         f(treeWalk)
       }
@@ -269,10 +272,10 @@ package object git {
 
   // use ObjectWalk instead ??
   def allBlobsReachableFrom(revisions: Set[String])(implicit repo: Repository): Set[ObjectId] = {
-    implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+    implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
-    revisions.map(repo.resolve).toSet.map {
-      objectId: ObjectId => allBlobsReachableFrom(objectId.asRevObject)
+    revisions.map(repo.resolve).map {
+      objectId => allBlobsReachableFrom(objectId.asRevObject)
     } reduce (_ ++ _)
   }
 

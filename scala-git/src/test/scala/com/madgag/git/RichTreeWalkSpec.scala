@@ -17,16 +17,21 @@
 package com.madgag.git
 
 import com.madgag.git.test._
-import org.scalatest.{FlatSpec, Matchers}
+import com.madgag.scala.collection.decorators._
+import org.eclipse.jgit.internal.storage.file.FileRepository
+import org.eclipse.jgit.lib.ObjectReader
+import org.eclipse.jgit.revwalk.RevWalk
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.collection.mutable
 
-class RichTreeWalkSpec extends FlatSpec with Matchers {
+class RichTreeWalkSpec extends AnyFlatSpec with Matchers {
 
-   implicit val repo = unpackRepo("/sample-repos/example.git.zip")
+   implicit val repo: FileRepository = unpackRepo("/sample-repos/example.git.zip")
 
    "rich tree" should "implement exists" in {
-     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
      val tree = abbrId("830e").asRevTree
 
@@ -35,7 +40,7 @@ class RichTreeWalkSpec extends FlatSpec with Matchers {
    }
 
    it should "implement map" in {
-     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
      val tree = abbrId("830e").asRevTree
 
@@ -43,11 +48,11 @@ class RichTreeWalkSpec extends FlatSpec with Matchers {
 
      fileNameList should have size 6
 
-     fileNameList.groupBy(identity).mapValues(_.size).toMap should contain ("zero" -> 2)
+     fileNameList.groupBy(identity).mapV(_.size).toMap should contain ("zero" -> 2)
    }
 
    it should "implement withFilter" in {
-     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
      val tree = abbrId("830e").asRevTree
 
@@ -61,7 +66,7 @@ class RichTreeWalkSpec extends FlatSpec with Matchers {
    }
 
    it should "implement foreach" in {
-     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
      val tree = abbrId("830e").asRevTree
 
@@ -73,7 +78,7 @@ class RichTreeWalkSpec extends FlatSpec with Matchers {
    }
 
    it should "work with for comprehensions" in {
-     implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+     implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
      val tree = abbrId("830e").asRevTree
 

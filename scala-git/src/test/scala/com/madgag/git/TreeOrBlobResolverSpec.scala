@@ -17,17 +17,22 @@
 package com.madgag.git
 
 import com.madgag.git.test._
-import org.scalatest.{EitherValues, FlatSpec, Matchers}
+import org.eclipse.jgit.internal.storage.file.FileRepository
+import org.eclipse.jgit.lib.ObjectReader
+import org.eclipse.jgit.revwalk.RevWalk
+import org.scalatest.EitherValues
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class TreeOrBlobResolverSpec extends FlatSpec with Matchers with EitherValues {
+class TreeOrBlobResolverSpec extends AnyFlatSpec with Matchers with EitherValues {
 
-  implicit val repo = unpackRepo("/sample-repos/annotatedTagExample.git.zip")
+  implicit val repo: FileRepository = unpackRepo("/sample-repos/annotatedTagExample.git.zip")
 
   "annotated tag" should "be correctly evaluated, not null" in {
-    implicit val (revWalk, reader) = repo.singleThreadedReaderTuple
+    implicit val (revWalk: RevWalk, reader: ObjectReader) = repo.singleThreadedReaderTuple
 
     val annotatedTag = repo.resolve("chapter1").asRevTag
 
-    treeOrBlobPointedToBy(annotatedTag).right.value shouldBe abbrId("4c6a")
+    treeOrBlobPointedToBy(annotatedTag).value shouldBe abbrId("4c6a")
   }
 }

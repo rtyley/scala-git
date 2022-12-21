@@ -2,9 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  val robertoJgit = "com.madgag" % "org.eclipse.jgit" % "6.4.0.202211300538-r"
-  val eclipseJgit = "org.eclipse.jgit" % "org.eclipse.jgit" % "4.0.1.201506240215-r"
-  val jgit = eclipseJgit
+  val jgit = "org.eclipse.jgit" % "org.eclipse.jgit" % "6.4.0.202211300538-r"
 
   val scalatest = "org.scalatest" %% "scalatest" % "3.2.14"
 

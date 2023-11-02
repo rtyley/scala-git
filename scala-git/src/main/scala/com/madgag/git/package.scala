@@ -94,7 +94,7 @@ package object git {
       (revWalk, revWalk.getObjectReader)
     }
 
-    def nonSymbolicRefs = repo.getAllRefs.asScala.values.filterNot(_.isSymbolic)
+    def nonSymbolicRefs = repo.getRefDatabase.getRefs.asScala.filterNot(_.isSymbolic).toSeq
 
   }
 
@@ -172,7 +172,7 @@ package object git {
   implicit class RichRevObject(revObject: RevObject) {
     lazy val typeString = Constants.typeString(revObject.getType)
 
-    def toTree(implicit revWalk: RevWalk): Option[RevTree] = treeOrBlobPointedToBy(revObject).right.toOption
+    def toTree(implicit revWalk: RevWalk): Option[RevTree] = treeOrBlobPointedToBy(revObject).toOption
   }
 
   val FileModeNames = Map(

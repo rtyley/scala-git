@@ -8,6 +8,6 @@ object Dependencies {
 
   val madgagCompress = "com.madgag" % "util-compress" % "1.35"
 
-  val guava = Seq("com.google.guava" % "guava" % "31.1-jre", "com.google.code.findbugs" % "jsr305" % "3.0.2")
+  val guava = Seq("com.google.guava" % "guava" % "32.1.3-jre", "com.google.code.findbugs" % "jsr305" % "3.0.2")
 
 }

@@ -2,8 +2,8 @@ import ReleaseTransformations._
 import Dependencies._
 
 lazy val baseSettings = Seq(
-  scalaVersion := "2.13.10",
-  crossScalaVersions := Seq(scalaVersion.value, "2.13.12"),
+  scalaVersion := "2.13.12",
+  // crossScalaVersions := Seq(scalaVersion.value, "3.3.1"),
   organization := "com.madgag.scala-git",
   scmInfo := Some(ScmInfo(
     url("https://github.com/rtyley/scala-git"),
@@ -19,7 +19,7 @@ lazy val `scala-git` = project.settings(baseSettings: _*).dependsOn(`scala-git-t
 lazy val `scala-git-test` = project.in(file("scala-git-test")).settings(baseSettings: _*)
 
 ThisBuild / Test / testOptions +=
-  Tests.Argument(TestFrameworks.ScalaTest, "-u", s"test-results/scala-${scalaVersion.value}")
+  Tests.Argument(TestFrameworks.ScalaTest, "-u", s"test-results/scala-${scalaVersion.value}", "-o")
 
 
 lazy val root = (project in file(".")).aggregate(`scala-git`, `scala-git-test`).

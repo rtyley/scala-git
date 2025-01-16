@@ -2,14 +2,13 @@ import ReleaseTransformations._
 import Dependencies._
 
 lazy val baseSettings = Seq(
-  scalaVersion := "2.13.10",
-  crossScalaVersions := Seq(scalaVersion.value, "3.2.1"),
+  scalaVersion := "2.13.16",
   organization := "com.madgag.scala-git",
   scmInfo := Some(ScmInfo(
     url("https://github.com/rtyley/scala-git"),
     "scm:git:git@github.com:rtyley/scala-git.git"
   )),
-  licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+  licenses := Seq(License.Apache2),
   scalacOptions ++= Seq("-deprecation", "-unchecked"),
   libraryDependencies ++= Seq(madgagCompress % Test, scalatest % Test)
 )

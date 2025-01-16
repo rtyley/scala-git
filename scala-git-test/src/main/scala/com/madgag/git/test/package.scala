@@ -19,11 +19,11 @@ package com.madgag.git
 import java.io.File
 import java.io.File.separatorChar
 import java.net.URL
-
-import com.google.common.io.Files
 import com.madgag.compress.CompressUtil._
 import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+
+import java.nio.file.Files.createTempDirectory
 
 package object test {
   def unpackRepo(fileName: String): FileRepository = {
@@ -38,7 +38,8 @@ package object test {
     val rawZipFileInputStream = resource.openStream()
     assert(rawZipFileInputStream != null, s"Stream for $fileName is null.")
 
-    val repoParentFolder = new File(Files.createTempDir(), fileName.replace(separatorChar, '_') + "-unpacked")
+
+    val repoParentFolder = new File(createTempDirectory("test").toFile, fileName.replace(separatorChar, '_') + "-unpacked")
     repoParentFolder.mkdir()
 
     unzip(rawZipFileInputStream, repoParentFolder)

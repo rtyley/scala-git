@@ -10,9 +10,17 @@ lazy val artifactProducingProjectSettings = Seq(
   libraryDependencies ++= Seq(madgagCompress % Test, scalatest % Test)
 )
 
-lazy val `scala-git` = project.settings(artifactProducingProjectSettings *).dependsOn(`scala-git-test` % Test)
+lazy val `scala-git` = project.settings(artifactProducingProjectSettings *).dependsOn(`scala-git-test` % Test).settings(
+  libraryDependencies ++= Seq(
+    jgit,
+    "com.madgag" %% "scala-collection-plus" % "0.11",
+    scalatest % Test
+  )
+)
 
-lazy val `scala-git-test` = project.in(file("scala-git-test")).settings(artifactProducingProjectSettings *)
+lazy val `scala-git-test` = project.in(file("scala-git-test")).settings(artifactProducingProjectSettings *).settings(
+  libraryDependencies ++= guava :+ madgagCompress :+ jgit
+)
 
 ThisBuild / Test / testOptions +=
   Tests.Argument(TestFrameworks.ScalaTest, "-u", s"test-results/scala-${scalaVersion.value}", "-o")
@@ -20,7 +28,7 @@ ThisBuild / Test / testOptions +=
 lazy val root = (project in file(".")).aggregate(`scala-git`, `scala-git-test`).settings(
   publish / skip := true,
   // releaseVersion := ReleaseVersion.fromAggregatedAssessedCompatibilityWithLatestRelease().value,
-  releaseCrossBuild := true, // true if you cross-build the project for multiple Scala versions
+  // releaseCrossBuild := true, // true if you cross-build the project for multiple Scala versions
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,

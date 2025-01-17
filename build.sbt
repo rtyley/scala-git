@@ -27,7 +27,7 @@ ThisBuild / Test / testOptions +=
 
 lazy val root = (project in file(".")).aggregate(`scala-git`, `scala-git-test`).settings(
   publish / skip := true,
-  // releaseVersion := ReleaseVersion.fromAggregatedAssessedCompatibilityWithLatestRelease().value,
+  releaseVersion := ReleaseVersion.fromAggregatedAssessedCompatibilityWithLatestRelease().value,
   // releaseCrossBuild := true, // true if you cross-build the project for multiple Scala versions
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,

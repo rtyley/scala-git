@@ -11,6 +11,7 @@ lazy val artifactProducingProjectSettings = Seq(
 )
 
 lazy val `scala-git` = project.settings(artifactProducingProjectSettings *).dependsOn(`scala-git-test` % Test).settings(
+  Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
   libraryDependencies ++= Seq(
     jgit,
     "com.madgag" %% "scala-collection-plus" % "1.0.0",

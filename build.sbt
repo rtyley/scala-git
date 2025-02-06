@@ -3,7 +3,7 @@ import sbtversionpolicy.withsbtrelease.ReleaseVersion
 import Dependencies.*
 
 lazy val artifactProducingProjectSettings = Seq(
-  scalaVersion := "2.13.16",
+  scalaVersion := "3.3.5",
   organization := "com.madgag.scala-git",
   licenses := Seq(License.Apache2),
   scalacOptions ++= Seq("-deprecation", "-unchecked", "-release:11"),

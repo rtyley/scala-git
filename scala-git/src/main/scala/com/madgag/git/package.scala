@@ -18,19 +18,16 @@ package com.madgag
 
 import java.io.File
 import java.nio.charset.Charset
-
 import _root_.scala.jdk.CollectionConverters._
 import _root_.scala.annotation.tailrec
 import _root_.scala.language.implicitConversions
 import _root_.scala.util.{Success, Try}
-
-
 import org.eclipse.jgit
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffAlgorithm.SupportedAlgorithm
 import org.eclipse.jgit.diff._
 import org.eclipse.jgit.internal.storage.file.ObjectDirectory
-import org.eclipse.jgit.lib.Constants.OBJ_BLOB
+import org.eclipse.jgit.lib.Constants.{OBJ_BLOB, R_HEADS}
 import org.eclipse.jgit.lib.ObjectInserter.Formatter
 import org.eclipse.jgit.lib.ObjectReader.OBJ_ANY
 import org.eclipse.jgit.lib._
@@ -95,7 +92,10 @@ package object git {
     }
 
     def nonSymbolicRefs = repo.getRefDatabase.getRefs.asScala.filterNot(_.isSymbolic).toSeq
+  }
 
+  implicit class RichRefDatabase(refDatabase: RefDatabase) {
+    val branchRefs: Seq[Ref] = refDatabase.getRefsByPrefix(R_HEADS).asScala.toSeq
   }
 
   implicit class RichString(str: String) {

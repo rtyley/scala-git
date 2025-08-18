@@ -12,7 +12,6 @@ ThisBuild / scalacOptions := Seq("-deprecation", "-release:11")
 lazy val artifactProducingProjectSettings = Seq(
   organization := "com.madgag.scala-git",
   licenses := Seq(License.Apache2),
-  scalacOptions ++= Seq("-deprecation", "-unchecked", "-release:11"),
   libraryDependencies ++= Seq(scalatest % Test)
 )
 

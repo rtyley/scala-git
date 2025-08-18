@@ -16,10 +16,11 @@
 
 package com.madgag.git
 
+import net.lingala.zip4j.ZipFile
+
 import java.io.File
 import java.io.File.separatorChar
 import java.net.URL
-import com.madgag.compress.CompressUtil._
 import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 
@@ -32,18 +33,18 @@ package object test {
     FileRepositoryBuilder.create(resolvedGitDir).asInstanceOf[FileRepository]
   }
 
-  def unpackRepoAndGetGitDir(fileName: String) = {
+  def unpackRepoAndGetGitDir(fileName: String): File = {
     val resource: URL = getClass.getResource(fileName)
     assert(resource != null, s"Resource for $fileName is null.")
-    val rawZipFileInputStream = resource.openStream()
-    assert(rawZipFileInputStream != null, s"Stream for $fileName is null.")
 
+    val file = new File(resource.toURI)
+    assert(file.exists(), s"File $file does not exist.")
 
     val repoParentFolder = new File(createTempDirectory("test").toFile, fileName.replace(separatorChar, '_') + "-unpacked")
     repoParentFolder.mkdir()
 
-    unzip(rawZipFileInputStream, repoParentFolder)
-    rawZipFileInputStream.close
+    new ZipFile(file.getAbsolutePath).extractAll(repoParentFolder.getAbsolutePath)
+
     repoParentFolder
   }
 }

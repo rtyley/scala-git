@@ -17,34 +17,36 @@
 package com.madgag.git
 
 import net.lingala.zip4j.ZipFile
-
-import java.io.File
-import java.io.File.separatorChar
-import java.net.URL
 import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 
-import java.nio.file.Files.createTempDirectory
+import java.io.File
+import java.net.URL
+import java.nio.file.{Files, Path}
 
 package object test {
-  def unpackRepo(fileName: String): FileRepository = {
-    val resolvedGitDir = unpackRepoAndGetGitDir(fileName)
-    require(resolvedGitDir.exists)
-    FileRepositoryBuilder.create(resolvedGitDir).asInstanceOf[FileRepository]
+  def unpackRepo(zippedRepoResource: String): FileRepository = unpackRepo(pathForResource(zippedRepoResource))
+
+  def unpackRepo(zippedRepo: Path): FileRepository = fileRepoFor(unpackRepoAndGetGitDir(zippedRepo))
+
+  def pathForResource(fileName: String, clazz: Class[_] = getClass): Path = {
+    val resource: URL = clazz.getResource(fileName)
+    assert(resource != null, s"Resource for $fileName is null.")
+    new File(resource.toURI).toPath
   }
 
-  def unpackRepoAndGetGitDir(fileName: String): File = {
-    val resource: URL = getClass.getResource(fileName)
-    assert(resource != null, s"Resource for $fileName is null.")
+  private def unpackRepoAndGetGitDir(zippedRepo: Path): File = {
+    assert(Files.exists(zippedRepo), s"File $zippedRepo does not exist.")
 
-    val file = new File(resource.toURI)
-    assert(file.exists(), s"File $file does not exist.")
+    val repoParentFolder = Files.createTempDirectory(s"test-${zippedRepo.getFileName}-unpacked").toFile
 
-    val repoParentFolder = new File(createTempDirectory("test").toFile, fileName.replace(separatorChar, '_') + "-unpacked")
-    repoParentFolder.mkdir()
-
-    new ZipFile(file.getAbsolutePath).extractAll(repoParentFolder.getAbsolutePath)
+    new ZipFile(zippedRepo.toFile.getAbsolutePath).extractAll(repoParentFolder.getAbsolutePath)
 
     repoParentFolder
+  }
+
+  private def fileRepoFor(resolvedGitDir: File): FileRepository = {
+    require(resolvedGitDir.exists)
+    FileRepositoryBuilder.create(resolvedGitDir).asInstanceOf[FileRepository]
   }
 }
